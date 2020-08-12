@@ -15,8 +15,9 @@ public class Model_list_adapter extends RecyclerView.Adapter<Model_list_adapter.
 {
 
     public RecyclerViewClickListner mlistner;
-
     public String[] Data;
+
+
     public Model_list_adapter(String[] data)
     {
         this.Data = data;
@@ -27,7 +28,8 @@ public class Model_list_adapter extends RecyclerView.Adapter<Model_list_adapter.
     {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.model_view,parent,false);
-        return new Model_View_Holder(view,mlistner);
+        return new Model_View_Holder(view, mlistner);
+
     }
 
     @Override

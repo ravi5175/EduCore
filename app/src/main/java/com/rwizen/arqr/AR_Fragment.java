@@ -32,7 +32,7 @@ import java.io.IOException;
 
 public class AR_Fragment extends AppCompatActivity {
     private ArFragment arFragment;
-    private String ASSET="http://249dca24e7bf.ngrok.io/3DAssets";
+    private String ASSET="http://http://daf6527506f5.ngrok.io/3DAssets";
     private String JSOUP_ASSET=ASSET;
     private ModelAnimator modelAnimator;
     public String qrString;
