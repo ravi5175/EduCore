@@ -1,3 +1,13 @@
 <resources>
+    <!-- APP RESOURCE STRINGS-->
     <string name="app_name">AR+QR</string>
+
+    <!-- MAIN ACTIVITY RESOURCE STRINGS-->
+    <string name="main_activity_product_name">Educore</string>
+    <string name="main_activity_start_button_label">Start Scanning</string>
+    <string name="main_activity_about_educore">
+        Implementation of Quick Response on AR Core based Application
+    </string>
+    <string name="main_activity_logo_description">Educore Logo</string>
+
 </resources>

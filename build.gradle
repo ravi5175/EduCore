@@ -7,11 +7,20 @@ buildscript {
         
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.1'
-        classpath 'com.google.ar.sceneform:plugin:1.15.0'
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+
+        /*NOTE : Default Gradle Version for Build is 4.0.1, It is not recommended to use other
+        versions, They may cause a unstable build*/
+
+        classpath 'com.android.tools.build:gradle:4.0.1'
+
+        /*NOTE : Default Sceneform Version for Build is 1.15.0, It is not recommended to use other
+        versions, Frequent Crashing in Application is being observed with newer Versions,
+        As stated by Google it is the last stable release of sceneform by Google before making
+        sceneform sdk opensource*/
+        classpath 'com.google.ar.sceneform:plugin:1.15.0'
+        classpath 'com.google.gms:google-services:4.3.5'
     }
 }
 
@@ -19,7 +28,6 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
     }
 }
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "227413129571",
+    "project_id": "educore-1046d",
+    "storage_bucket": "educore-1046d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:227413129571:android:640fe0743c85d7ec213b56",
+        "android_client_info": {
+          "package_name": "com.rwizen.arqr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "227413129571-vetnu4qc6kd3uoiu2d0m572dosdbrd1l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzQZmDJg6vjJ9ElH4ZyAsw6McQB6-YqpA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "227413129571-vetnu4qc6kd3uoiu2d0m572dosdbrd1l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
