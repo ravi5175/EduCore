@@ -26,7 +26,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
     private FirebaseStorage storageRef; // personal firebase storage bucket reference
     private String firebaseStorageUri = "gs://educore-1046d.appspot.com"; // personal firebase storage bucket url
     private StorageReference eduCoreAssets; // personal firebase storage bucket asset directory reference
-    private  String downloadDir; // app model storage path
+    private  String localRef; // app model storage path
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +35,7 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
         scannerView = findViewById(R.id.qr_scanner);
         storageRef = FirebaseStorage.getInstance(firebaseStorageUri);
         eduCoreAssets = storageRef.getReference().child("EduCoreAssets");
-        downloadDir = this.getExternalFilesDir(null).getAbsolutePath()+"/EduCore/Asset3D";
+        localRef = this.getExternalFilesDir(null)+"/EduCore/Asset3D";
     }
 
     @Override
@@ -80,7 +80,6 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
                 Log.d("storage","model not available on firebase storage");
                 Toast.makeText(getApplicationContext(),"QR not belongs to EduCore",Toast.LENGTH_SHORT).show();
                 onResume();
-
             }
         }).addOnFailureListener(new OnFailureListener(){
             @Override
@@ -99,8 +98,8 @@ public class Scanner extends AppCompatActivity implements ZXingScannerView.Resul
     * */
 
     private void checkLocalReference(String qrCode){
-        Log.d("storage",downloadDir+"");
-        File modelDirectory=new File(downloadDir+"/"+qrCode);
+        Log.d("storage",localRef);
+        File modelDirectory=new File(localRef+"/"+qrCode);
         if(!modelDirectory.exists()){
             Log.d("storage","download required");
             arIntent(qrCode,true);

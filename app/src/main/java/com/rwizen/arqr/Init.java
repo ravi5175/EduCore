@@ -7,6 +7,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -64,6 +65,8 @@ public class Init extends AppCompatActivity {
         File file=new File(rootPath);
         if(!file.exists()){
             file.mkdirs();
+            Log.d("Init RFS","created");
         }
+        Log.d("Init RFS","already present");
     }
 }

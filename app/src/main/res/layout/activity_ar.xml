@@ -26,7 +26,8 @@
             android:layout_height="37dp"
             android:layout_gravity="center_vertical"
             android:indeterminate="true"
-            android:indeterminateTint="#ffffff" />
+            android:indeterminateTint="#ffffff"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/model_name"
@@ -37,7 +38,8 @@
             android:text="Loading Model from Server..."
             android:textColor="#ffffff"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="gone"/>
     </LinearLayout>
 
     <ImageView

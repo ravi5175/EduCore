@@ -26,6 +26,7 @@ import com.google.ar.sceneform.assets.RenderableSource;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.ux.ArFragment;
 import com.google.ar.sceneform.ux.TransformableNode;
+import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.ListResult;
 import com.google.firebase.storage.StorageReference;
@@ -35,30 +36,30 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 
 public class AR extends AppCompatActivity {
 
-    private ArFragment arFragment;
-    private String ASSET = "http://http://daf6527506f5.ngrok.io/3DAssets";
-    private String JSOUP_ASSET=ASSET;
-    public String qrString;
-    private int i = 0;
-    private  String downlaodDir;
+    private ArFragment arFragment; // variable pointing ARFragment of Sceneform
+    public String qrString; // string extracted from QRCode
 
-    ImageView reScan_btn;
-    ProgressBar progress;
-    public DownloadManager downloadManager;
+    private  String localRef; // variable pointing to default location of 3d assets in phone physical storage
 
-    public TextView modelName;
-    public Boolean downloadRequired;
+    public ImageView reScan_btn; // button to go back to scanning fragment
+    public ProgressBar progress; // variable pointing to model processing progress bar
 
-    public String requiredAsset;
+    public TextView modelName; // variable pointing to onscreen active model name
+    public Boolean downloadRequired; // determines if model is available in local storage or needs download
 
-    private FirebaseStorage storageRef;
-    private StorageReference eduCoreAsset;
-    private String storageBucketUrl = "gs://educore-1046d.appspot.com";;
+    public String requiredAsset;// variable pointing to .gltf model file in physical memory for rendering
+
+    private FirebaseStorage storageRef; // firebase storage bucket reference
+    private StorageReference eduCoreAsset;// firebase storage bucket educore asset reference
+    private String storageBucketUrl = "gs://educore-1046d.appspot.com"; // storage bucket public url
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,58 +70,57 @@ public class AR extends AppCompatActivity {
         modelName = findViewById(R.id.model_name);
         reScan_btn=findViewById(R.id.rescan);
 
-        downlaodDir = this.getExternalFilesDir(null).getAbsolutePath();
+        localRef = this.getExternalFilesDir(null)+"/EduCore/Asset3D/";
 
         qrString = getIntent().getStringExtra("qr_code");
         downloadRequired = getIntent().getBooleanExtra("download_required",false);
 
-        ASSET= ASSET+"/"+qrString+"/"+qrString+".fbx";
-        JSOUP_ASSET=JSOUP_ASSET+"/"+qrString+"/";
-
         storageRef = FirebaseStorage.getInstance(storageBucketUrl);
         eduCoreAsset = storageRef.getReference().child("EduCoreAssets/"+qrString);
 
-        progress.setVisibility(ProgressBar.GONE);
-        modelName.setVisibility(TextView.GONE);
-
         arFragment=(ArFragment)getSupportFragmentManager().findFragmentById(R.id.arFragment);
-
         arFragment.setOnTapArPlaneListener((hitResult,plane,motionEvent)->
         {
             progress.setVisibility(ProgressBar.VISIBLE);
             modelName.setVisibility(TextView.VISIBLE);
 
             if (downloadRequired) {
+                Log.d("storageAR","download required");
                 modelName.setText("downloading");
                 downloadModel(qrString);
-                //new Jsoup_Scrap().execute();                                                                         //separate_thread
             }
-            else {
-                requiredAsset = downlaodDir+"/EduCore/Asset3D/"+qrString+"/"+qrString+".gltf";
-            }
-            //placeModel(hitResult.createAnchor());
-            //modelName.setText(qrString);
-        });
 
+            requiredAsset = localRef+qrString+"/"+qrString+".gltf";
+            placeModel(hitResult.createAnchor(),requiredAsset);
+            modelName.setText(qrString);
+        });
 
         reScan_btn.setOnClickListener(
                 view -> startActivity(new Intent(getApplicationContext(),Scanner.class)));
 
     }
 
-    private void placeModel(Anchor anchor)
+    /* Function : placeMOde(Anchor anchor,String assetLocation)
+    *  ReturnType : Void
+    *  Parameters :
+    *   -> anchor - reference to anchor in physical space
+    *   -> assetLocation - reference to .gltf asset in local storage
+    *  Use Case : Used to Place 3D Asset in physical World
+    * */
+    private void placeModel(Anchor anchor, String assetLocation)
     {
+        Log.d("storageAR","placemodel is called");
         ModelRenderable
                 .builder()
                 .setSource(this,
                         RenderableSource
                         .builder()
-                        .setSource(this, Uri.parse(downlaodDir+"Asset3D/"+qrString+"/"+qrString+".gltf"), RenderableSource.SourceType.GLTF2)
+                        .setSource(this, Uri.parse(assetLocation), RenderableSource.SourceType.GLTF2)
                         .setScale(0.5f)
                         .setRecenterMode(RenderableSource.RecenterMode.ROOT)
                         .build()
                 )
-                .setRegistryId(downlaodDir+"Asset3D/"+qrString+"/")
+                .setRegistryId(localRef+qrString+"/")
                 .build()
                 .thenAccept(modelRenderable -> addModelToScene(anchor,modelRenderable))
                 .exceptionally(throwable -> {
@@ -130,75 +130,69 @@ public class AR extends AppCompatActivity {
                 });
     }
 
+    /* Function : placeMOde(Anchor anchor,String assetLocation)
+     *  ReturnType : Void
+     *  Parameters :
+     *   -> anchor - reference to anchor in physical space
+     *   -> assetLocation - reference to .gltf asset in physical memory
+     *  Use Case : Used to Place 3D Asset in physical World
+     * */
     private void addModelToScene(Anchor anchor, ModelRenderable modelRenderable) {
         AnchorNode anchorNode = new AnchorNode(anchor);
         TransformableNode transformableNode = new TransformableNode(arFragment.getTransformationSystem());
         transformableNode.setParent(anchorNode);
         transformableNode.setRenderable(modelRenderable);
         arFragment.getArSceneView().getScene().addChild(anchorNode);
-        //animateModel(modelRenderable);                                                                         // will be added in future
         transformableNode.select();
         progress.setVisibility(ProgressBar.INVISIBLE);
     }
 
-    /*private void animateModel(ModelRenderable modelRenderable)
-    {
-        if (modelAnimator != null && modelAnimator.isRunning())
-            modelAnimator.end();
-        int animationCount = modelRenderable.getAnimationDataCount();
-        if (i==animationCount)
-            i=0;
-        AnimationData animationData = modelRenderable.getAnimationData(i);
-        modelAnimator=new ModelAnimator(animationData,modelRenderable);
-        modelAnimator.start();
-        i++;
-    }*/
-
-    public class Jsoup_Scrap extends AsyncTask<String,String,String>
-    {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-        @Override
-        protected String doInBackground(String... strings)
-        {
-            String rootPath=Environment.getExternalStorageDirectory()+"/EduCore/Asset3D/"+qrString;
-            File file=new File(rootPath);
-            if(!file.exists()){
-                file.mkdirs();
-            }
-            try
-            {
-                Document doc = Jsoup.connect(JSOUP_ASSET).get();
-                Elements ref = doc.getElementsByTag("A");
-                for (Element i : ref)
-                {
-                    String j = JSOUP_ASSET + i.attr("href");
-                    String nameOfFile = URLUtil.guessFileName(j,null,MimeTypeMap.getFileExtensionFromUrl(j));
-                    downloadManager = (DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
-                    DownloadManager.Request request = new DownloadManager.Request(Uri.parse(j));
-                    request.setDestinationUri(Uri.fromFile(new File(rootPath+"/",i.attr("href"))));
-                    downloadManager.enqueue(request);
-                }
-            }
-            catch (IOException e) { }
-            return null;
-        }
-    }
-
     private void downloadModel(String qrCode){
         Log.d("storageAR",eduCoreAsset.toString());
-        File modelDirectory = new File(downlaodDir+"/"+qrCode);
+        final long ONE_MEGABYTE = 1024 * 1024;
+        File modelDirectory = new File(localRef+qrCode);
+        if (!modelDirectory.exists()) modelDirectory.mkdirs();
+
         eduCoreAsset.listAll().addOnSuccessListener(new OnSuccessListener<ListResult>(){
             @Override
             public void onSuccess(ListResult listResult) {
                 for (StorageReference prefix : listResult.getItems()) {
-                    Log.d("storageAR",prefix.toString());
+                    String[] modelFile = prefix.toString().split("//")[1].split("/");
+                    Log.d("storageAR", modelFile[3]);
+                    File localFile = new File(modelDirectory, modelFile[3]);
+                    if(!localFile.isFile()){
+                        Log.d("storageAR","file not exists, creating one");
+                        try {
+                            if(localFile.createNewFile()){
+                                Log.d("storageAR","file created");
+                            }
+                            Log.d("storageAR","file already present");
+                        } catch (IOException e) {
+                            Log.d("storageAR","file not created");
+                        }
+                    }else{
+                        Log.d("storageAR","local file already present");
+                    }
+
+                    prefix.getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Log.d("storageAR","file loaded in memory "+modelFile[3]);
+                            try {
+                                FileOutputStream out = new FileOutputStream(localFile,true);
+                                out.write(bytes);
+                                out.close();
+                            } catch (IOException e) {
+                                Log.d("storageAR","file out error" + e.toString());
+                                e.printStackTrace();
+                            }
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception exception) {
+                            // Handle any errors
+                        }
+                    });
                 }
             }
         }).addOnFailureListener(new OnFailureListener(){
@@ -207,5 +201,7 @@ public class AR extends AppCompatActivity {
                 Log.d("storageAR","something went wrong "+ e.toString());
             }
         });
+
+
     }
 }
