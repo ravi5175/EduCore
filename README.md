@@ -1,3 +1,3 @@
-# Quick-Response-Augmented-Reality-Application
+# Project Educore
 
 developed by Ravi5175
