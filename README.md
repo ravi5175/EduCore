@@ -1,6 +1,6 @@
 <div align="center" margin="0px">
 <img align="center" width="200px" height="200px" src="https://user-images.githubusercontent.com/48784560/119270746-c29add00-bc1b-11eb-8611-0ce65b1dc01f.png">
-<h1> Project Educore</h1>
+<h1> Project EduCore</h1>
   
   [![Generic badge](https://img.shields.io/badge/ANDROID-grey?style=for-the-badge&logo=android)](https://shields.io/)
   [![Generic badge](https://img.shields.io/badge/JAVA-orange?style=for-the-badge&logo=java)](https://shields.io/)
