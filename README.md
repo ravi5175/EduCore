@@ -5,12 +5,17 @@
   [![Generic badge](https://img.shields.io/badge/ANDROID-grey?style=for-the-badge&logo=android)](https://shields.io/)
   [![Generic badge](https://img.shields.io/badge/JAVA-orange?style=for-the-badge&logo=java)](https://shields.io/)
   [![Generic badge](https://img.shields.io/badge/AR%20CORE-purple?style=for-the-badge&logo=ar)](https://shields.io/)
-  [![Generic badge](https://img.shields.io/badge/GRADLE-4.1.0-blue?style=for-the-badge&logo=gradle)](https://shields.io/)
+  [![Generic badge](https://img.shields.io/badge/OPEN-SOURCE-purple?style=for-the-badge&logo=open%20source%20initiative)](https://shields.io/)
+  [![Generic badge](https://img.shields.io/badge/EduCore-V1.0.0-green?style=for-the-badge&logo=ar)](https://shields.io/)
+  [![Generic badge](https://img.shields.io/badge/GRADLE-V4.1.0-blue?style=for-the-badge&logo=gradle)](https://shields.io/)
+  
 
 </div>
 
+## About EduCore
 
-
- 
 Project EduCore is a Augmented Reality Based Android Application Written in Java.\
+
+## Setting Up Project
+
 developed by Ravi5175
