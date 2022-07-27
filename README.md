@@ -15,7 +15,7 @@
 
 ## About EduCore
 
-Project EduCore is a Augmented Reality Based Android Application Written in Java.\
+Project EduCore is an Augmented Reality based Android Application written in Java. EduCore scans specific QR Codes and renders a 3D Asset in the Physical Space at the user's will. Project EduCore is designed to remove the dependency of economically and spacially hindered institutions on expensive and high-maintenance prototypes for demonstration. With Educore, 1:1 scale prototypes are available for the user at any point in time or space which can be stored on the user's device. Project Educore uses a firebase bucket to store 3D models of Prototypes. For each Model, a specific QR code is made which can be placed in books or documents or other necessary places. Users can use the app that is attached to the respective cloud bucket to scan codes, each successful scan sends a request to the bucket to fetch the respective model. after successfully processing of model, this model can be rendered by the user in the physical space for realtime demonstration.
 
 
 ## Setting Up Project
